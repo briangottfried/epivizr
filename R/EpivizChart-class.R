@@ -137,8 +137,37 @@ EpivizChart <- setRefClass("EpivizChart",
 		get_measurements = function() {
   	  "Get measurements for the chart."
   	  .self$.measurements
-    }
+		},
+	  to_polymer = function() {
+	    chart_tag <- .polymer_tag()
+	    
+	    ms <- .self$.measurements
+	    ms_list <- lapply(ms, as.list)
+	    ms_json <- epivizrServer::json_writer(ms_list)
+	    
+	    polymer_chart <- .polymer_chart(chart_tag, .self$mgr_id, ms_json)
+	    
+	    return(polymer_chart)
+	  }, 
+	  .polymer_chart <- function(chart_type, chart_id, measurements) {
+	    polymer_chart <- paste0(
+	      '<', chart_type, ' ', 'class="charts" ', 'id="', chart_id, '"', "measurements='", measurements, "'",'>',
+	      '</', chart_type, '>', "\n"
+	    )
+	    return(polymer_chart)
+	  },
+	  .polymer_tag <- function() {
+	    if (.self$.type == "epiviz.plugins.charts.BlocksTrack") return("epiviz-json-blocks-track")
+	    # if (.self$.type == "epiviz.plugins.charts.GenesTrack")  return("epiviz-json-genes-track")
+	    if (.self$.type == "epiviz.plugins.charts.HeatmapPlot") return("epiviz-json-heatmap-plot")
+	    if (.self$.type == "epiviz.plugins.charts.LinePlot") return("epiviz-json-line-plot")
+	    if (.self$.type == "epiviz.plugins.charts.LineTrack") return("epiviz-json-line-track")
+	    if (.self$.type == "epiviz.plugins.charts.ScatterPlot") return("epiviz-json-scatter-plot")
+	    if (.self$.type == "epiviz.plugins.charts.StackedLinePlot") return("epiviz-json-stacked-line-plot")
+	    if (.self$.type == "epiviz.plugins.charts.StackedLineTrack") return("epiviz-json-stacked-line-track")
+	  }
 	)
+  
 )
 
 #' Print information about EpivizChart
