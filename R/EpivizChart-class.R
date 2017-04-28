@@ -168,7 +168,7 @@ EpivizChart <- setRefClass("EpivizChart",
         tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-heatmap-plot", "epiviz-heatmap-plot")
       } else if (.self$.type == "epiviz.plugins.charts.LinePlot") {
         tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-line-plot", "epiviz-line-plot")
-      } else if (.self$.type == "epiviz.plugins.charts.LineTrack") return("epiviz-json-line-track") {
+      } else if (.self$.type == "epiviz.plugins.charts.LineTrack") {
         tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-line-track", "epiviz-line-track")
       } else if (.self$.type == "epiviz.plugins.charts.ScatterPlot") {
         tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-scatter-plot", "epiviz-scatter-plot")
