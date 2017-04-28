@@ -138,36 +138,48 @@ EpivizChart <- setRefClass("EpivizChart",
   	  "Get measurements for the chart."
   	  .self$.measurements
 		},
-	  to_polymer = function() {
+	  to_polymer = function(data=NULL) {
+	    if (is.null(data)){
+	      stop("data missing")
+	    }
+	    
 	    chart_tag <- .polymer_tag()
 	    
 	    ms <- .self$.measurements
 	    ms_list <- lapply(ms, as.list)
 	    ms_json <- epivizrServer::json_writer(ms_list)
 	    
-	    polymer_chart <- .polymer_chart(chart_tag, .self$mgr_id, ms_json)
-	    
+	    polymer_chart <- .polymer_chart(chart_tag, .self$.mgr_id, ms_json)
 	    return(polymer_chart)
-	  }, 
-	  .polymer_chart <- function(chart_type, chart_id, measurements) {
-	    polymer_chart <- paste0(
-	      '<', chart_type, ' ', 'class="charts" ', 'id="', chart_id, '"', "measurements='", measurements, "'",'>',
+	  },
+	  .polymer_chart = function(chart_type, chart_id, measurements, data) {
+	     polymer_chart <- paste0(
+	      '<', chart_type, ' ', 'class="charts" ', 'id="', chart_id, '"',
+	      "measurements='", measurements, "'", "data='", data, "'",'>',
 	      '</', chart_type, '>', "\n"
 	    )
 	    return(polymer_chart)
 	  },
-	  .polymer_tag <- function() {
-	    if (.self$.type == "epiviz.plugins.charts.BlocksTrack") return("epiviz-json-blocks-track")
-	    # if (.self$.type == "epiviz.plugins.charts.GenesTrack")  return("epiviz-json-genes-track")
-	    if (.self$.type == "epiviz.plugins.charts.HeatmapPlot") return("epiviz-json-heatmap-plot")
-	    if (.self$.type == "epiviz.plugins.charts.LinePlot") return("epiviz-json-line-plot")
-	    if (.self$.type == "epiviz.plugins.charts.LineTrack") return("epiviz-json-line-track")
-	    if (.self$.type == "epiviz.plugins.charts.ScatterPlot") return("epiviz-json-scatter-plot")
-	    if (.self$.type == "epiviz.plugins.charts.StackedLinePlot") return("epiviz-json-stacked-line-plot")
-	    if (.self$.type == "epiviz.plugins.charts.StackedLineTrack") return("epiviz-json-stacked-line-track")
+	  .polymer_tag = function(datasourceJSON=TRUE) {
+	    tag <- NULL
+      if (.self$.type == "epiviz.plugins.charts.BlocksTrack") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-blocks-track", "epiviz-blocks-track")
+      } else if (.self$.type == "epiviz.plugins.charts.HeatmapPlot") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-heatmap-plot", "epiviz-heatmap-plot")
+      } else if (.self$.type == "epiviz.plugins.charts.LinePlot") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-line-plot", "epiviz-line-plot")
+      } else if (.self$.type == "epiviz.plugins.charts.LineTrack") return("epiviz-json-line-track") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-line-track", "epiviz-line-track")
+      } else if (.self$.type == "epiviz.plugins.charts.ScatterPlot") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-scatter-plot", "epiviz-scatter-plot")
+      } else if (.self$.type == "epiviz.plugins.charts.StackedLinePlot") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-stacked-line-plot", "epiviz-stacked-line-plot")
+      } else if (.self$.type == "epiviz.plugins.charts.StackedLineTrack") {
+        tag <- ifelse(datasourceJSON == TRUE, "epiviz-json-stacked-line-track", "epiviz-stacked-line-track")
+      } # else if (.self$.type == "epiviz.plugins.charts.GenesTrack")
+	   return(tag)
 	  }
 	)
-  
 )
 
 #' Print information about EpivizChart
